@@ -1,0 +1,85 @@
+<% layout("/layouts/boilerplate") %>
+<div class="row mt-3">
+  <div class="col-8 offset-2">
+    <h3>Edit Your Listing</h3>
+    <form
+      action="/listings/<%= listing._id %>?_method=PUT"
+      method="POST"
+      novalidate
+      class="needs-validation"
+    >
+      <div class="mb-3">
+        <label for="title">Title</label>
+        <input
+          type="text"
+          name="title"
+          value="<%= listing.title %>"
+          id="title"
+          class="form-control"
+          required
+        />
+        <div class="invalid-feedback">Title should be required</div>
+      </div>
+      <div class="mb-3">
+        <label for="location">Location</label>
+        <input
+          type="text"
+          name="location"
+          value="<%= listing.location %>"
+          id="location"
+          class="form-control"
+          required
+        />
+        <div class="invalid-feedback">Location should required</div>
+      </div>
+      <div class="mb-3">
+        <label for="image">Image</label>
+        <input
+          type="text"
+          name="image"
+          value="<%= listing.image %>"
+          class="form-control"
+        />
+      </div>
+      <div class="row">
+        <div class="mb-3 col-md-4">
+          <label for="price">Price</label>
+          <input
+            type="number"
+            name="price"
+            id="price"
+            value="<%= listing.price %>"
+            class="form-control"
+            required
+          />
+          <div class="invalid-feedback">Price should not be blank</div>
+        </div>
+        <div class="mb-3 col-md-8">
+          <label for="country">Country</label>
+          <input
+            type="text"
+            name="country"
+            id="country"
+            value="<%= listing.country %>"
+            class="form-control"
+            required
+          />
+          <div class="invalid-feedback">Country name should required</div>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="description">Description</label>
+        <textarea
+          name="description"
+          id="description"
+          value="<%= listing.description %>"
+          class="form-control"
+          required
+        ></textarea>
+        <div class="invalid-feedback">Discription should not be blank</div>
+      </div>
+
+      <button class="btn btn-dark edit-btn mt-3">Edit Button</button>
+    </form>
+  </div>
+</div>
