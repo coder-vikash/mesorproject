@@ -35,6 +35,17 @@ async function main() {
 //Review Post Route
 //Post Review route
 
+app.post("/listings/:id/reviews", async (req, res, next) => {
+  console.log(req.body);
+  let listing = await Listing.findById(req.params.id);
+  let newReview = new review(req.body.review);
+  
+  listing.reviews.push(newReview);
+  
+  await newReview.save();
+  await listing.save();
+  res.redirect(`/listings/${listing._id}`);
+});
 app.delete(
   "/listings/:id/reviews/:reviewId",
   wrapAsync(async (req, res) => {
@@ -47,17 +58,6 @@ app.delete(
   })
 );
 
-app.post("/listings/:id/reviews", async (req, res, next) => {
-  console.log(req.body);
-  let listing = await Listing.findById(req.params.id);
-  let newReview = new review(req.body.review);
-
-  listing.reviews.push(newReview);
-
-  await newReview.save();
-  await listing.save();
-  res.redirect(`/listings/${listing._id}`);
-});
 //Delete Review Route
 
 // app.get("/Lesting", async (req, res) => {
