@@ -8,7 +8,8 @@ const methodoverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utill/wrapAsync.js");
 const Expresserror = require("./utill/expressError.js");
-const { listingSchema, reviewSchema } = require("./schema.js");
+const { reviewSchema } = require("./schema.js");
+const listingSchema = require("./schema.js");
 const Joi = require("joi");
 const review = require("./Models/review.js");
 
@@ -31,6 +32,33 @@ main()
 async function main() {
   await mongoose.connect(mongoose_url);
 }
+//Review Post Route
+//Post Review route
+
+app.delete(
+  "/listings/:id/reviews/:reviewId",
+  wrapAsync(async (req, res) => {
+    console.log("inside delete route");
+
+    let { id, reviewId } = req.params;
+    await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+    await review.findByIdAndDelete(reviewId);
+    res.redirect(`/listings/${id}`);
+  })
+);
+
+app.post("/listings/:id/reviews", async (req, res, next) => {
+  console.log(req.body);
+  let listing = await Listing.findById(req.params.id);
+  let newReview = new review(req.body.review);
+
+  listing.reviews.push(newReview);
+
+  await newReview.save();
+  await listing.save();
+  res.redirect(`/listings/${listing._id}`);
+});
+//Delete Review Route
 
 // app.get("/Lesting", async (req, res) => {
 //   let SimpleListing = new Listing({
@@ -142,20 +170,20 @@ app.delete("/listings/:id", async (req, res) => {
 });
 //Review
 // Post Route
-app.post(
-  "/listings/:id/reviews",
-  validateReview,
-  wrapAsync(async (req, res) => {
-    let listing = await Listing.findById(req.params.id);
-    let newReview = new review(req.body.review);
+// app.post(
+//   "/listings/:id/reviews",async (req, res) => {
+//     console.log(req.body);
 
-    listing.reviews.push(newReview);
+//     // let listing = await Listing.findById(req.params.id);
+//     // let newReview = new review(req.body.review);
 
-    await newReview.save();
-    await listing.save();
-    res.redirect(`/listings/${listing._id}`);
-  })
-);
+//     // listing.reviews.push(newReview);
+
+//     // await newReview.save();
+//     // await listing.save();
+//     // res.redirect(`/listings/${listing._id}`);
+//   }
+// );
 
 app.all("*", (req, res, next) => {
   next(new Expresserror("Page Not Found", 404));
@@ -163,7 +191,8 @@ app.all("*", (req, res, next) => {
 
 app.use((err, req, res, next) => {
   let { status = 500, message = "Something went wrong" } = err;
-  res.render("./listings/error.ejs", { status, message });
+  console.log(err);
+
   res.status(status).send(message);
 });
 
