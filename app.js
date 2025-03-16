@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const Listing = require("./Models/listing.js");
 const path = require("path");
 const { encode } = require("punycode");
-const methodoverride = require("method-override");
+const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utill/wrapAsync.js");
 const Expresserror = require("./utill/expressError.js");
@@ -18,7 +18,7 @@ const mongoose_url = "mongodb://localhost:27017/wanderlust";
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
-app.use(methodoverride("_method"));
+app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
@@ -35,29 +35,26 @@ async function main() {
 //Review Post Route
 //Post Review route
 
+app.delete("/listings/:id/reviews/:reviewId", async (req, res) => {
+  console.log("inside delete route");
+
+  let { id, reviewId } = req.params;
+  await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+  await review.findByIdAndDelete(reviewId);
+  res.redirect(`/listings/${id}`);
+});
+
 app.post("/listings/:id/reviews", async (req, res, next) => {
   console.log(req.body);
   let listing = await Listing.findById(req.params.id);
   let newReview = new review(req.body.review);
-  
+
   listing.reviews.push(newReview);
-  
+
   await newReview.save();
   await listing.save();
   res.redirect(`/listings/${listing._id}`);
 });
-app.delete(
-  "/listings/:id/reviews/:reviewId",
-  wrapAsync(async (req, res) => {
-    console.log("inside delete route");
-
-    let { id, reviewId } = req.params;
-    await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
-    await review.findByIdAndDelete(reviewId);
-    res.redirect(`/listings/${id}`);
-  })
-);
-
 //Delete Review Route
 
 // app.get("/Lesting", async (req, res) => {
@@ -170,20 +167,18 @@ app.delete("/listings/:id", async (req, res) => {
 });
 //Review
 // Post Route
-// app.post(
-//   "/listings/:id/reviews",async (req, res) => {
-//     console.log(req.body);
+app.post("/listings/:id/reviews", async (req, res) => {
+  console.log(req.body);
 
-//     // let listing = await Listing.findById(req.params.id);
-//     // let newReview = new review(req.body.review);
+  let listing = await Listing.findById(req.params.id);
+  let newReview = new review(req.body.review);
 
-//     // listing.reviews.push(newReview);
+  listing.reviews.push(newReview);
 
-//     // await newReview.save();
-//     // await listing.save();
-//     // res.redirect(`/listings/${listing._id}`);
-//   }
-// );
+  await newReview.save();
+  await listing.save();
+  res.redirect(`/listings/${listing._id}`);
+});
 
 app.all("*", (req, res, next) => {
   next(new Expresserror("Page Not Found", 404));
