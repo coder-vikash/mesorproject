@@ -60,6 +60,7 @@ router.post("/:id/reviews", async (req, res, next) => {
 // };
 
 //New Route
+//this is the not for me
 
 router.get("/new", (req, res) => {
   res.render("../views/listings/new.ejs");
