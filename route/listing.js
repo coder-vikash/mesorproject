@@ -2,28 +2,19 @@ const express = require("express");
 const router = express.Router();
 const wrapAsync = require("../utill/wrapAsync.js");
 const Expresserror = require("../utill/expressError.js");
-const { listingSchema } = require("../schema.js");
+const { listingsSchema } = require("../schema.js");
 const Listing = require("../Models/listing.js");
 const review = require("../Models/review.js");
- 
 
 //Post Review route listingSchema
 
-
+// console.log(listingsSchema)
 const validateListing = (req, res, next) => {
-    let { error } = listingSchema.validate(req.body);
-    if (error) {
-        throw new ExpressErrors(400, error.details.map((e) => e.message).join(", "));
-    } else {
-        next();
-    }
-};
-
-const validateListings= (req, res, next) => {
-  const { error } = listingSchema.validate(req.body);
+  console.log(req.body);
+  let { error } = listingsSchema.validate(req.body);
+  console.log(error);
   if (error) {
-    const msg = error.details.map((el) => el.message).join(",");
-    throw new Expresserror(msg, 400);
+    throw new Expresserror(400, error.details.map((e) => e.message).join(", "));
   } else {
     next();
   }
@@ -59,19 +50,6 @@ router.post("/:id/reviews", async (req, res, next) => {
   res.redirect(`/listings/${listing._id}`);
 });
 
-// const validateListing = (req, res, next) => {
-//   const { error } = listingSchema.validate(req.body);
-//   if (error) {
-//     const msg = error.details.map((el) => el.message).join(",");
-//     throw new Expresserror(msg, 400);
-//   } else {
-//     next();
-//   }
-// };
-
-//New Route
-//this is the not for me
-
 router.get("/new", (req, res) => {
   res.render("../views/listings/new.ejs");
 });
@@ -84,11 +62,9 @@ router.get("/:id", async (req, res) => {
 });
 //Show Route
 
-router.post("/", async (req, res) => {
-  console.log(req.body)
+router.post("/", validateListing, async (req, res) => {
+  console.log(req.body);
   const { title, location, price, description, image, country } = req.body;
-  let result = listingSchema.validate(req.body);
-  console.log(result);
   const listing = new Listing({
     title,
     location,
@@ -98,7 +74,7 @@ router.post("/", async (req, res) => {
     country,
   });
   await listing.save();
-  console.log(listing)
+  console.log(listing);
   res.redirect("/listings");
 });
 //Edit Route
