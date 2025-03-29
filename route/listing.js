@@ -35,6 +35,7 @@ router.delete("/:id/reviews/:reviewId", async (req, res) => {
   let { id, reviewId } = req.params;
   await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
   await review.findByIdAndDelete(reviewId);
+  req.flash("success", "Review Deleted Successfully!");
   res.redirect(`/listings/${id}`);
 });
 
@@ -47,6 +48,7 @@ router.post("/:id/reviews", async (req, res, next) => {
 
   await newReview.save();
   await listing.save();
+  req.flash("success", "Review Added Successfully!");
   res.redirect(`/listings/${listing._id}`);
 });
 
@@ -58,6 +60,10 @@ router.get("/new", (req, res) => {
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   const listing = await Listing.findById(id).populate("reviews");
+  if (!listing) {
+    req.flash("error", "Listing you requested for does not exist!");
+    res.redirect("/listings");
+  }
   res.render("../views/listings/show.ejs", { listing });
 });
 //Show Route
@@ -74,6 +80,7 @@ router.post("/", validateListing, async (req, res) => {
     country,
   });
   await listing.save();
+  req.flash("success", "New Listing Successfully!");
   console.log(listing);
   res.redirect("/listings");
 });
@@ -81,6 +88,11 @@ router.post("/", validateListing, async (req, res) => {
 router.get("/:id/edit", async (req, res) => {
   const { id } = req.params;
   const listing = await Listing.findById(id);
+  if (!listing) {
+    req.flash("error", "Listing you requested for does not exist!");
+    res.redirect("/listings");
+  }
+  req.flash("success", "Review Edit Successfully!");
   res.render("../views/listings/edit.ejs", { listing });
 });
 
@@ -96,13 +108,15 @@ router.put("/:id", async (req, res) => {
     image,
     country,
   });
-  res.redirect("/listings");
+  req.flash("success", "Listing Updated!");
+  res.redirect(`/listings/${id}`);
 });
 
 //Delete Route
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
   await Listing.findByIdAndDelete(id);
+  req.flash("success", "Listing Deleted!");
   res.redirect("/listings");
 });
 //Review
@@ -115,8 +129,9 @@ router.post("/:id/reviews", async (req, res) => {
 
   listing.reviews.push(newReview);
 
-  await newReview.save();
   await listing.save();
+  await newReview.save();
+  req.flash("success", "New Listing Successfully!");
   res.redirect(`/listings/${listing._id}`);
 });
 

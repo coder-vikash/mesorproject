@@ -6,9 +6,12 @@ const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const Expresserror = require("./utill/expressError.js");
+const session = require("express-session");
+const flash = require("connect-flash");
 
 const listing = require("./route/listing.js");
 const review = require("./route/review.js");
+const { date } = require("joi");
 
 const mongoose_url = "mongodb://localhost:27017/wanderlust";
 
@@ -29,9 +32,30 @@ main()
 async function main() {
   await mongoose.connect(mongoose_url);
 }
+
+const sessionOptions = {
+  secret: "mysupersecretcode",
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+    maxAge: 1000 * 60 * 60 * 24 * 3,
+    httpOnly: true,
+  },
+};
+
 //Post Review route
 app.get("/", (req, res) => {
   res.send("Hi I am root");
+});
+
+app.use(session(sessionOptions));
+app.use(flash());
+
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  next();
 });
 
 app.use("/listings", listing);
