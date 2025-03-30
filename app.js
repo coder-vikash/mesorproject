@@ -9,8 +9,13 @@ const Expresserror = require("./utill/expressError.js");
 const session = require("express-session");
 const flash = require("connect-flash");
 
-const listing = require("./route/listing.js");
-const review = require("./route/review.js");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./Models/user.js");
+
+const listingRouter = require("./route/listing.js");
+const reviewRouter = require("./route/review.js");
+const userRouter = require("./route/user.js");
 const { date } = require("joi");
 
 const mongoose_url = "mongodb://localhost:27017/wanderlust";
@@ -52,14 +57,31 @@ app.get("/", (req, res) => {
 app.use(session(sessionOptions));
 app.use(flash());
 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   next();
 });
 
-app.use("/listings", listing);
-app.use("/listings/:id/reviews", review);
+// app.get("/demouser", async (req, res) => {
+//   let fakeUser = new User({
+//     email: "student@gmail.com",
+//     username: "vikash",
+//   });
+//   let registerUser = await User.register(fakeUser, "helloworld");
+//   res.send(registerUser);
+// });
+
+app.use("/listings", listingRouter);
+app.use("/listings/:id/reviews", reviewRouter);
+app.use("/", userRouter);
 
 app.all("*", (req, res, next) => {
   next(new Expresserror("Page Not Found", 404));
