@@ -5,6 +5,7 @@ const Expresserror = require("../utill/expressError.js");
 const { listingsSchema } = require("../schema.js");
 const Listing = require("../Models/listing.js");
 const review = require("../Models/review.js");
+const { isloggedIn } = require("../middleware.js");
 
 //Post Review route listingSchema
 
@@ -29,7 +30,7 @@ router.get(
   })
 );
 
-router.delete("/:id/reviews/:reviewId", async (req, res) => {
+router.delete("/:id/reviews/:reviewId",isloggedIn, async (req, res) => {
   console.log("inside delete route");
 
   let { id, reviewId } = req.params;
@@ -39,7 +40,7 @@ router.delete("/:id/reviews/:reviewId", async (req, res) => {
   res.redirect(`/listings/${id}`);
 });
 
-router.post("/:id/reviews", async (req, res, next) => {
+router.post("/:id/reviews",isloggedIn, async (req, res, next) => {
   console.log(req.body);
   let listing = await Listing.findById(req.params.id);
   let newReview = new review(req.body.review);
@@ -52,8 +53,8 @@ router.post("/:id/reviews", async (req, res, next) => {
   res.redirect(`/listings/${listing._id}`);
 });
 
-router.get("/new", (req, res) => {
-  res.render("../views/listings/new.ejs");
+router.get("/new", isloggedIn, (req, res) => {
+  res.render("listings/new.ejs");
 });
 
 //show Route
@@ -68,7 +69,7 @@ router.get("/:id", async (req, res) => {
 });
 //Show Route
 
-router.post("/", validateListing, async (req, res) => {
+router.post("/", validateListing,isloggedIn, async (req, res) => {
   console.log(req.body);
   const { title, location, price, description, image, country } = req.body;
   const listing = new Listing({
@@ -85,7 +86,7 @@ router.post("/", validateListing, async (req, res) => {
   res.redirect("/listings");
 });
 //Edit Route
-router.get("/:id/edit", async (req, res) => {
+router.get("/:id/edit",isloggedIn, async (req, res) => {
   const { id } = req.params;
   const listing = await Listing.findById(id);
   if (!listing) {
@@ -93,11 +94,12 @@ router.get("/:id/edit", async (req, res) => {
     res.redirect("/listings");
   }
   req.flash("success", "Review Edit Successfully!");
-  res.render("../views/listings/edit.ejs", { listing });
+  // res.render("../views/listings/edit.ejs", { listing });
+  res.render("listings/edit.ejs", { listing });
 });
 
 //Update Route
-router.put("/:id", async (req, res) => {
+router.put("/:id",isloggedIn, async (req, res) => {
   const { id } = req.params;
   const { title, location, price, description, image, country } = req.body;
   const listing = await Listing.findByIdAndUpdate(id, {
@@ -113,7 +115,7 @@ router.put("/:id", async (req, res) => {
 });
 
 //Delete Route
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",isloggedIn, async (req, res) => {
   const { id } = req.params;
   await Listing.findByIdAndDelete(id);
   req.flash("success", "Listing Deleted!");
@@ -121,7 +123,7 @@ router.delete("/:id", async (req, res) => {
 });
 //Review
 // Post Route
-router.post("/:id/reviews", async (req, res) => {
+router.post("/:id/reviews",isloggedIn, async (req, res) => {
   console.log(req.body);
 
   let listing = await Listing.findById(req.params.id);
