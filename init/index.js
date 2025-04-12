@@ -18,7 +18,14 @@ async function main() {
 
 const inidb = async () => {
   await Listing.deleteMany({});
+  initData.data = initData.data.map((obj) => ({
+    ...obj,
+    owner: "67e9898cdc35bb1ce9b37718",
+    reviews: [],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  }));
   await Listing.insertMany(initData.data);
-  console.log("Data Imported");
+  console.log("Data  inserted successfully");
 };
 inidb();
