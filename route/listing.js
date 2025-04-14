@@ -80,23 +80,17 @@ router.get("/:id", async (req, res) => {
   res.render("../views/listings/show.ejs", { listing });
 });
 //Show Route
-
-router.post("/", validateListing, isloggedIn, async (req, res) => {
-  console.log(req.body);
-  const { title, location, price, description, image, country } = req.body;
-  const listing = new Listing({
-    title,
-    location,
-    price,
-    description,
-    image,
-    country,
-  });
-  listing.owner = req.user._id;
-  await listing.save();
-  req.flash("success", "New Listing Successfully!");
+// SHOW ROUTE: Show Details of a Specific Listing
+router.get("/:id", async (req, res, next) => {
+  const listing = await Listing.findById(req.params.id)
+  .populate("reviews")
+  .populate("owner");
+  if (!listing) {
+      req.flash("error", "Listing Not Found!");
+      return res.redirect("/listings");
+  }
   console.log(listing);
-  res.redirect("/listings");
+  res.render("listings/show", { listing });
 });
 //Edit Route
 router.get(
