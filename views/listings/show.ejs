@@ -80,8 +80,8 @@
       <% listing.reviews.forEach((review) => { %>
       <div class="card mt-3 col-5 ms-3 mb-3">
         <div class="card-body">
-          <h5 class="card-title"><%= review.author.username %></h5>
-          <p class="card-title">Rating: <%= review.rating %>stars</p>
+          <h5 class="card-title"><b> @<%= review.author.username %></b></h5>
+          <p class="card-title">Rating: <%= review.rating %> stars</p>
           <p class="card-text">Comment: <%= review.comment %></p>
         </div>
         <form
