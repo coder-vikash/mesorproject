@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router({ mergeParams: true });
 const wrapAsync = require("../utill/wrapAsync.js");
 const Expresserror = require("../utill/expressError.js");
-const { validateReview } = require("../middleware.js");
+const { validateReview, isloggedIn } = require("../middleware.js");
 const review = require("../Models/review.js");
 const Listing = require("../Models/listing.js");
 
@@ -19,11 +19,14 @@ const Listing = require("../Models/listing.js");
 // Post Route
 router.post(
   "/",
+  isloggedIn,
   validateReview,
   wrapAsync(async (req, res) => {
     console.log(req.body);
     let listing = await Listing.findById(req.params.id);
     let newReview = new review(req.body.review);
+    newReview.author = req.user._id;
+    newReview.rating = req.body.review.rating;
 
     listing.reviews.push(newReview);
 
