@@ -4,12 +4,11 @@ const wrapAsync = require("../utill/wrapAsync.js");
 // const Expresserror = require("../utill/expressError.js");
 const Listing = require("../Models/listing.js");
 const review = require("../Models/review.js");
-const { isloggedIn, isOwner,validateListing } = require("../middleware.js");
+const { isloggedIn, isOwner, validateListing } = require("../middleware.js");
 
 //Post Review route listingSchema
 
 // console.log(listingsSchema)
- 
 
 //Index Route
 router.get(
@@ -80,17 +79,22 @@ router.post("/", validateListing, isloggedIn, async (req, res) => {
   res.redirect("/listings");
 });
 //Edit Route
-router.get("/:id/edit", isloggedIn,isOwner,wrapAsync( async (req, res) => {
-  const { id } = req.params;
-  const listing = await Listing.findById(id);
-  if (!listing) {
-    req.flash("error", "Listing you requested for does not exist!");
-    res.redirect("/listings");
-  }
-  req.flash("success", "Review Edit Successfully!");
-  // res.render("../views/listings/edit.ejs", { listing });
-  res.render("listings/edit.ejs", { listing });
-}));
+router.get(
+  "/:id/edit",
+  isloggedIn,
+  isOwner,
+  wrapAsync(async (req, res) => {
+    const { id } = req.params;
+    const listing = await Listing.findById(id);
+    if (!listing) {
+      req.flash("error", "Listing you requested for does not exist!");
+      res.redirect("/listings");
+    }
+    req.flash("success", "Review Edit Successfully!");
+    // res.render("../views/listings/edit.ejs", { listing });
+    res.render("listings/edit.ejs", { listing });
+  })
+);
 
 //Update Route
 router.put(

@@ -29,9 +29,9 @@ module.exports.isOwner = async (req, res, next) => {
 };
 
 module.exports.validateListing = (req, res, next) => {
-  const { error } = listingsSchema.validate(req.body);
+  let { error } = listingSchema.validate(req.body);
   if (error) {
-    const msg = error.details.map((el) => el.message).join(",");
+    let msg = error.details.map((el) => el.message).join(",");
     throw new Expresserror(msg, 400);
   } else {
     next();
@@ -39,9 +39,9 @@ module.exports.validateListing = (req, res, next) => {
 };
 
 module.exports.validateReview = (req, res, next) => {
-  const { error } = listingsSchema.validate(req.body);
+  const { error } = reviewSchema.validate(req.body);
   if (error) {
-    const msg = error.details.map((el) => el.message).join(",");
+    let msg = error.details.map((el) => el.message).join(",");
     throw new Expresserror(msg, 400);
   } else {
     next();
