@@ -29,15 +29,31 @@ router.delete("/:id/reviews/:reviewId", isloggedIn, async (req, res) => {
   res.redirect(`/listings/${id}`);
 });
 
+// router.post("/:id/reviews", isloggedIn, async (req, res, next) => {
+//   console.log(req.body);
+//   let listing = await Listing.findById(req.params.id);
+//   let newReview = new review(req.body.review);
+
+//   listing.reviews.push(newReview);
+
+//   await newReview.save();
+//   await listing.save();
+//   req.flash("success", "Review Added Successfully!");
+//   res.redirect(`/listings/${listing._id}`);
+// });
+
 router.post("/:id/reviews", isloggedIn, async (req, res, next) => {
   console.log(req.body);
+
   let listing = await Listing.findById(req.params.id);
   let newReview = new review(req.body.review);
 
+  newReview.author = req.user._id;
   listing.reviews.push(newReview);
 
   await newReview.save();
   await listing.save();
+
   req.flash("success", "Review Added Successfully!");
   res.redirect(`/listings/${listing._id}`);
 });
@@ -55,6 +71,7 @@ router.get("/:id", async (req, res) => {
       populate: { path: "author" },
     })
     .populate("owner");
+  console.log(listing);
   if (!listing) {
     req.flash("error", "Listing you requested for does not exist!");
     res.redirect("/listings");
