@@ -11,9 +11,13 @@
     />
     <div class="card-body">
       <p class="card-text">
-        Owner By: <i><%= listing.owner && listing.owner.username ? listing.owner.username : 'Unknown' %></i>
+        Owner By:
+        <i
+          ><%= listing.owner && listing.owner.username ? listing.owner.username
+          : 'Unknown' %></i
+        >
       </p>
-      
+
       <p class="card-text"><%= listing.description %></p>
       <p &#8377; class="card-text">
         &#8377;<%= listing.price.toLocaleString("en-IN") %>

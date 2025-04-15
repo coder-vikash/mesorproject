@@ -19,15 +19,15 @@ router.get(
   })
 );
 
-router.delete("/:id/reviews/:reviewId", isloggedIn, async (req, res) => {
-  console.log("inside delete route");
+// router.delete("/:id/reviews/:reviewId", isloggedIn, async (req, res) => {
+//   console.log("inside delete route");
 
-  let { id, reviewId } = req.params;
-  await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
-  await review.findByIdAndDelete(reviewId);
-  req.flash("success", "Review Deleted Successfully!");
-  res.redirect(`/listings/${id}`);
-});
+//   let { id, reviewId } = req.params;
+//   await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+//   await review.findByIdAndDelete(reviewId);
+//   req.flash("success", "Review Deleted Successfully!");
+//   res.redirect(`/listings/${id}`);
+// });
 
 // router.post("/:id/reviews", isloggedIn, async (req, res, next) => {
 //   console.log(req.body);
@@ -42,22 +42,6 @@ router.delete("/:id/reviews/:reviewId", isloggedIn, async (req, res) => {
 //   res.redirect(`/listings/${listing._id}`);
 // });
 
-router.post("/:id/reviews", isloggedIn, async (req, res, next) => {
-  console.log(req.body);
-
-  let listing = await Listing.findById(req.params.id);
-  let newReview = new review(req.body.review);
-
-  newReview.author = req.user._id;
-  listing.reviews.push(newReview);
-
-  await newReview.save();
-  await listing.save();
-
-  req.flash("success", "Review Added Successfully!");
-  res.redirect(`/listings/${listing._id}`);
-});
-
 router.get("/new", isloggedIn, (req, res) => {
   res.render("listings/new.ejs");
 });
@@ -71,25 +55,25 @@ router.get("/:id", async (req, res) => {
       populate: { path: "author" },
     })
     .populate("owner");
-  console.log(listing);
+
   if (!listing) {
     req.flash("error", "Listing you requested for does not exist!");
     res.redirect("/listings");
   }
-  console.log(listing);
+
   res.render("../views/listings/show.ejs", { listing });
 });
 //Show Route
 // SHOW ROUTE: Show Details of a Specific Listing
 router.get("/:id", async (req, res, next) => {
   const listing = await Listing.findById(req.params.id)
-  .populate("reviews")
-  .populate("owner");
+    .populate("reviews")
+    .populate("owner");
   if (!listing) {
-      req.flash("error", "Listing Not Found!");
-      return res.redirect("/listings");
+    req.flash("error", "Listing Not Found!");
+    return res.redirect("/listings");
   }
-  console.log(listing);
+  // console.log(listing);
   res.render("listings/show", { listing });
 });
 //Edit Route
@@ -145,19 +129,19 @@ router.delete(
   })
 );
 //Review
-// Post Route
-router.post("/:id/reviews", isloggedIn, async (req, res) => {
-  console.log(req.body);
+// // Post Route
+// router.post("/:id/reviews", isloggedIn, async (req, res) => {
+//   console.log(req.body);
 
-  let listing = await Listing.findById(req.params.id);
-  let newReview = new review(req.body.review);
+//   let listing = await Listing.findById(req.params.id);
+//   let newReview = new review(req.body.review);
 
-  listing.reviews.push(newReview);
+//   listing.reviews.push(newReview);
 
-  await listing.save();
-  await newReview.save();
-  req.flash("success", "New Listing Successfully!");
-  res.redirect(`/listings/${listing._id}`);
-});
+//   await listing.save();
+//   await newReview.save();
+//   req.flash("success", "New Listing Successfully!");
+//   res.redirect(`/listings/${listing._id}`);
+// });
 
 module.exports = router;
