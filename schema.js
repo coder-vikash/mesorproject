@@ -11,7 +11,7 @@ const listingsSchema = Joi.object({
 
 module.exports = { listingsSchema }; // Ensure this matches your import
 
-module.exports.vadilateReview = Joi.object({
+module.exports.reviewSchema = Joi.object({
   review: Joi.object({
     comment: Joi.string().required(),
     rating: Joi.number().required().min(1).max(5),

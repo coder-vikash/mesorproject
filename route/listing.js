@@ -144,4 +144,18 @@ router.delete(
 //   res.redirect(`/listings/${listing._id}`);
 // });
 
+router.post(
+  "/",
+  isloggedIn,
+  validateListing,
+  wrapAsync(async (req, res) => {
+    const newlisting = new Listing(req.body);
+    newlisting.owner = req.user._id;
+    let result = await newlisting.save();
+    console.log(result);
+    req.flash("success", "New listing created");
+    res.redirect("/listings");
+  })
+);
+
 module.exports = router;
