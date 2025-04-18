@@ -10,24 +10,14 @@ const {
 const Review = require("../Models/review.js");
 const Listing = require("../Models/listing.js");
 
+const reviewController = require("../controllers/reviews.js");
+
 // Post Route
 router.post(
   "/",
   isloggedIn,
   validateReview,
-  wrapAsync(async (req, res) => {
-    console.log(req.body);
-    let listing = await Listing.findById(req.params.id);
-    let newReview = new Review(req.body.review);
-    newReview.author = req.user._id;
-
-    listing.reviews.push(newReview);
-
-    await newReview.save();
-    await listing.save();
-    req.flash("success", "Review Created Successfully!");
-    res.redirect(`/listings/${listing._id}`);
-  })
+  wrapAsync(reviewController.createReview)
 );
 // Delete Route
 router.delete(
