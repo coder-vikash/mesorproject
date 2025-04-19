@@ -51,7 +51,6 @@ const listingSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  
 });
 
 listingSchema.post("findOneAndDelete", async function (listing) {
@@ -60,5 +59,6 @@ listingSchema.post("findOneAndDelete", async function (listing) {
   }
 });
 
-const Listing = mongoose.model("Listing", listingSchema);
+const Listing =
+  mongoose.models.Listing || mongoose.model("Listing", listingSchema);
 module.exports = Listing;
