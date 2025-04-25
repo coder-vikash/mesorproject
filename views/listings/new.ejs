@@ -2,7 +2,13 @@
 <div class="row mt-3">
   <div class="col-8 offset-2">
     <h3>Create New Listing</h3>
-    <form action="/listings" method="POST" novalidate class="needs-validation">
+    <form
+      action="/listings"
+      method="POST"
+      novalidate
+      class="needs-validation"
+      enctype="multipart/form-data"
+    >
       <div class="mb-3">
         <label for="title" class="form-label">Title</label>
         <input
@@ -28,14 +34,10 @@
         />
         <div class="invalid-feedback">Please enter the Slocation</div>
       </div>
+
       <div class="mb-3">
-        <label for="image" class="form-label">Image</label>
-        <input
-          type="text"
-          name="image"
-          placeholder="enter your image"
-          class="form-control"
-        />
+        <label for="image" class="form-label">Upload Image</label>
+        <input type="file" name="listing[image]" class="form-control" />
       </div>
       <div class="row">
         <div class="mb-3 col-md-4">

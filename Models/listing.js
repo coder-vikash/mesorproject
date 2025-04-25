@@ -20,14 +20,8 @@ const listingSchema = new Schema({
     required: true,
   },
   image: {
-    type: String,
-
-    default:
-      "https://cdn.pixabay.com/photo/2016/11/18/17/46/house-1836070_1280.jpg",
-    set: (v) =>
-      v === ""
-        ? "https://cdn.pixabay.com/photo/2016/11/18/17/46/house-1836070_1280.jpg"
-        : v,
+    url: String,
+    filename: String,
   },
   country: {
     type: String,

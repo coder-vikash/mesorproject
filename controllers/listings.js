@@ -27,8 +27,12 @@ module.exports.showListigs = async (req, res) => {
 };
 
 module.exports.postRoute = async (req, res) => {
-  const newlisting = new Listing(req.body);
+  let url = req.file.path;
+  let fileName = req.file.filename;
+
+  const newlisting = new Listing(req.body.listing);
   newlisting.owner = req.user._id;
+  newlisting.image = { url, fileName };
   let result = await newlisting.save();
   console.log(result);
   req.flash("success", "New listing created");
