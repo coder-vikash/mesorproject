@@ -13,8 +13,8 @@
         <label for="title" class="form-label">Title</label>
         <input
           type="text"
-          name="title"
-          placeholder="Add a catycy Title"
+          name="listing[title]"
+          placeholder="Add a catchy Title"
           id="title"
           class="form-control"
           required
@@ -22,29 +22,31 @@
         <div class="valid-feedback">Looks good!</div>
         <div class="invalid-feedback">Please enter the title.</div>
       </div>
+
       <div class="mb-3">
         <label for="location" class="form-label">Location</label>
         <input
           type="text"
-          name="location"
-          placeholder="noida"
+          name="listing[location]"
+          placeholder="Noida"
           id="location"
           class="form-control"
           required
         />
-        <div class="invalid-feedback">Please enter the Slocation</div>
+        <div class="invalid-feedback">Please enter the location</div>
       </div>
 
       <div class="mb-3">
         <label for="image" class="form-label">Upload Image</label>
         <input type="file" name="listing[image]" class="form-control" />
       </div>
+
       <div class="row">
         <div class="mb-3 col-md-4">
-          <label for="price" class="form-label"> Price</label>
+          <label for="price" class="form-label">Price</label>
           <input
             type="number"
-            name="price"
+            name="listing[price]"
             id="price"
             placeholder="1200"
             class="form-control"
@@ -57,25 +59,26 @@
           <label for="country" class="form-label">Country</label>
           <input
             type="text"
-            name="country"
+            name="listing[country]"
             id="country"
             placeholder="India"
             class="form-control"
             required
           />
-          <div class="invalid-feedback">Please Enter the country</div>
+          <div class="invalid-feedback">Please enter the country</div>
         </div>
       </div>
+
       <div class="mb-3">
         <label for="description" class="form-label">Description</label>
         <textarea
-          name="description"
+          name="listing[description]"
           id="description"
-          placeholder="enter hour Description"
+          placeholder="Enter your description"
           class="form-control"
           required
         ></textarea>
-        <div class="invalid-feedback">Please write the Discription</div>
+        <div class="invalid-feedback">Please write the description</div>
       </div>
 
       <button class="btn btn-dark add-btn mt-3">ADD Listing</button>

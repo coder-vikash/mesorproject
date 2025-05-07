@@ -11,46 +11,35 @@ const upload = multer({ storage });
 
 const listingController = require("../controllers/listings.js");
 
-router
-  .route("/")
-  .get(wrapAsync(listingController.index))
-  .post(
-    isloggedIn,
-    // validateListing,
-    upload.single("listing[image]"),
-    wrapAsync(listingController.postRoute)
-  );
+router.route("/").get(wrapAsync(listingController.index)).post(
+  isloggedIn,
+  upload.single("listing[image]"), // first upload file
+  validateListing, // then validate fields
+  wrapAsync(listingController.postRoute)
+);
 
+// New Listing form
 router.get("/new", isloggedIn, listingController.renderNewForm);
 
+// Show, Update, Delete specific listing
 router
   .route("/:id")
-  .get(listingController.showListigs)
-  .get(wrapAsync(listingController.showRoutes))
+  .get(wrapAsync(listingController.showRoutes)) // only one .get here
   .put(
     isloggedIn,
     isOwner,
+    upload.single("listing[image]"), // again upload file first if updating image
     validateListing,
     wrapAsync(listingController.updateRoute)
   )
   .delete(isloggedIn, isOwner, wrapAsync(listingController.deleteRoute));
 
-//New Route
-
-//show Route
-
-// SHOW ROUTE: Show Details of a Specific Listing
-
-//Edit Route
+// Edit form
 router.get(
   "/:id/edit",
   isloggedIn,
   isOwner,
   wrapAsync(listingController.renderEditForm)
 );
-
-//Update Route
-
-//Delete Route
 
 module.exports = router;
