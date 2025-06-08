@@ -16,6 +16,7 @@ module.exports.showListigs = async (req, res) => {
       path: "reviews",
       populate: { path: "author" },
     })
+
     .populate("owner");
 
   if (!listing) {
@@ -74,6 +75,12 @@ module.exports.updateRoute = async (req, res) => {
     image,
     country,
   });
+  if (typeof req.file !== "undefined") {
+    let url = req.file.path;  
+    let fileName = req.file.filename;
+    listings.image = { url, fileName };
+    await listings.save();
+  }
   req.flash("success", "Listing Updated!");
   res.redirect(`/listings/${id}`);
 };
