@@ -49,18 +49,28 @@ module.exports.renderEditForm = async (req, res) => {
   }
   req.flash("success", "Review Edit Successfully!");
   // res.render("../views/listings/edit.ejs", { listing });
-  res.render("listings/edit.ejs", { listing });
+  let OriginalImageurl = listing.image.url;
+  OriginalImageurl = OriginalImageurl.replace(
+    "upload",
+    "upload/w_300,h_200,c_fill/"
+  );
+
+  res.render("listings/edit.ejs", { listing, OriginalImageurl });
 };
 
 module.exports.showRoutes = async (req, res, next) => {
   const listing = await Listing.findById(req.params.id)
-    .populate("reviews")
+    .populate({
+      path: "reviews",
+      populate: { path: "author" }, // ✅ Correct nested population
+    })
     .populate("owner");
+
   if (!listing) {
     req.flash("error", "Listing Not Found!");
     return res.redirect("/listings");
   }
-  // console.log(listing);
+
   res.render("listings/show", { listing });
 };
 
@@ -76,7 +86,7 @@ module.exports.updateRoute = async (req, res) => {
     country,
   });
   if (typeof req.file !== "undefined") {
-    let url = req.file.path;  
+    let url = req.file.path;
     let fileName = req.file.filename;
     listings.image = { url, fileName };
     await listings.save();

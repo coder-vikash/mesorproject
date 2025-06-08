@@ -13,7 +13,7 @@
         <label for="title">Title</label>
         <input
           type="text"
-          name="title"
+          name="listing[title]"
           value="<%= listing.title %>"
           id="title"
           class="form-control"
@@ -25,7 +25,7 @@
         <label for="location">Location</label>
         <input
           type="text"
-          name="location"
+          name="listing[location]"
           value="<%= listing.location %>"
           id="location"
           class="form-control"
@@ -33,6 +33,11 @@
         />
         <div class="invalid-feedback">Location should required</div>
       </div>
+      <div class="mb-3">
+        Original Listing Image <br />
+        <img src="<%=OriginalImageurl%>" />
+      </div>
+
       <div class="mb-3">
         <label for="image">Upload New Image</label>
         <input type="file" name="listing[image]" class="form-control" />
@@ -42,7 +47,7 @@
           <label for="price">Price</label>
           <input
             type="number"
-            name="price"
+            name="listing[price]"
             id="price"
             value="<%= listing.price %>"
             class="form-control"
@@ -54,7 +59,7 @@
           <label for="country">Country</label>
           <input
             type="text"
-            name="country"
+            name="listing[country]"
             id="country"
             value="<%= listing.country %>"
             class="form-control"
@@ -66,7 +71,7 @@
       <div class="mb-3">
         <label for="description">Description</label>
         <textarea
-          name="description"
+          name="listing[description]"
           id="description"
           value="<%= listing.description %>"
           class="form-control"
