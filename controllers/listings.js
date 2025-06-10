@@ -30,19 +30,11 @@ module.exports.showListigs = async (req, res) => {
   res.render("../views/listings/show.ejs", { listing });
 };
 
-// module.exports.createListing = async (req, res, next) => {
-//   let response = await geocodingClient
-//     .forwardGeocode({
-//       query: "new delhi, india",
-//       limit: 2,
-//     })
-//     .send();
-
 module.exports.postRoute = async (req, res) => {
   let response = await geocodingClient
     .forwardGeocode({
-      query: "new delhi, india",
-      limit: 2,
+      query: req.body.listing.location,
+      limit: 1,
     })
     .send();
 
@@ -52,6 +44,8 @@ module.exports.postRoute = async (req, res) => {
   const newlisting = new Listing(req.body.listing);
   newlisting.owner = req.user._id;
   newlisting.image = { url, fileName };
+  newlisting.geometry = response.body.features[0].geometry;
+
   let result = await newlisting.save();
   console.log(result);
   req.flash("success", "New listing created");
