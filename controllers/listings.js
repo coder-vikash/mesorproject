@@ -44,6 +44,7 @@ module.exports.postRoute = async (req, res) => {
   const newlisting = new Listing(req.body.listing);
   newlisting.owner = req.user._id;
   newlisting.image = { url, fileName };
+  
   newlisting.geometry = response.body.features[0].geometry;
 
   let result = await newlisting.save();
